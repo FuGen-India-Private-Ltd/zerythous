@@ -34,7 +34,7 @@ export default function Navbar() {
           className={cn(
             "pointer-events-auto flex items-center justify-between transition-all duration-500 rounded-full",
             scrolled
-              ? "bg-[#FAFAFA]/80 backdrop-blur-md border border-[rgba(0,0,0,0.08)] py-3 px-6 md:px-8 w-full md:max-w-4xl shadow-2xl"
+              ? "bg-[#FAFAFA]/98 border border-[rgba(0,0,0,0.08)] py-3 px-6 md:px-8 w-full md:max-w-4xl shadow-2xl"
               : "bg-transparent py-4 px-6 md:px-12 w-full md:max-w-[1400px]"
           )}
         >

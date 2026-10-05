@@ -10,7 +10,7 @@ const technologies = [
 export default function TechMarquee() {
   return (
     <div className="relative z-30 -mt-16 sm:-mt-20 w-full max-w-[95%] sm:max-w-6xl mx-auto">
-      <div className="bg-[#FAFAFA] border border-[rgba(0,0,0,0.08)] rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden backdrop-blur-xl">
+      <div className="bg-[#FAFAFA] border border-[rgba(0,0,0,0.08)] rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden">
         <div className="flex flex-col sm:flex-row items-stretch">
           
           <div className="px-6 py-4 sm:py-6 border-b sm:border-b-0 sm:border-r border-[rgba(0,0,0,0.08)] bg-[#FFFFFF] flex items-center shrink-0">
