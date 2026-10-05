@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit, Syne } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 const outfit = Outfit({ 
   subsets: ["latin"],
@@ -37,9 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${outfit.variable} ${syne.variable} font-sans bg-background text-foreground antialiased selection:bg-accent-purple/30 selection:text-white`}>
-        <Navbar />
         {children}
-        <Footer />
       </body>
     </html>
   );

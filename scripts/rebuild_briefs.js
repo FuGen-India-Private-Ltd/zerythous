@@ -1,4 +1,7 @@
-import { createClient } from "@/lib/supabase/server"
+const fs = require('fs');
+const path = require('path');
+
+const file = `import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import Link from "next/link"
@@ -17,7 +20,7 @@ export default async function ProjectBriefDetailPage({ params }: { params: { id:
     const status = formData.get("status") as string
     const supabase = await createClient()
     await supabase.from("project_briefs").update({ status }).eq("id", params.id)
-    revalidatePath(`/admin/project-briefs/${params.id}`)
+    revalidatePath(\`/admin/project-briefs/\${params.id}\`)
     revalidatePath("/admin/project-briefs")
   }
 
@@ -34,11 +37,11 @@ export default async function ProjectBriefDetailPage({ params }: { params: { id:
           <div className="p-8 border-b border-[rgba(255,255,255,0.05)]">
             <h1 className="text-3xl font-medium text-white mb-2">{brief.name}</h1>
             <div className="flex flex-wrap gap-4 text-sm text-[#A1A1AA] mt-4">
-              <a href={`mailto:${brief.email}`} className="flex items-center hover:text-accent-purple transition-colors">
+              <a href={\`mailto:\${brief.email}\`} className="flex items-center hover:text-accent-purple transition-colors">
                 <Mail size={14} className="mr-2" /> {brief.email}
               </a>
               {brief.phone && (
-                <a href={`tel:${brief.phone}`} className="flex items-center hover:text-accent-purple transition-colors">
+                <a href={\`tel:\${brief.phone}\`} className="flex items-center hover:text-accent-purple transition-colors">
                   <Phone size={14} className="mr-2" /> {brief.phone}
                 </a>
               )}
@@ -82,12 +85,12 @@ export default async function ProjectBriefDetailPage({ params }: { params: { id:
             
             <div className="mb-6">
               <span className="text-[10px] text-[#A1A1AA] font-mono tracking-widest uppercase mb-2 block">Current Status</span>
-              <span className={`px-3 py-1.5 rounded text-xs uppercase font-mono tracking-wider border inline-block ${
+              <span className={\`px-3 py-1.5 rounded text-xs uppercase font-mono tracking-wider border inline-block \${
                   brief.status === 'submitted' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 
                   brief.status === 'in_progress' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' : 
                   brief.status === 'closed' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 
                   'bg-[rgba(255,255,255,0.05)] text-[#A1A1AA] border-[rgba(255,255,255,0.1)]'
-                }`}>
+                }\`}>
                   {brief.status}
               </span>
             </div>
@@ -115,4 +118,12 @@ export default async function ProjectBriefDetailPage({ params }: { params: { id:
       </div>
     </div>
   )
+}`;
+
+const fullPath = path.join(__dirname, '..', 'app/admin/(dashboard)/project-briefs/[id]/page.tsx');
+const dir = path.dirname(fullPath);
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
 }
+fs.writeFileSync(fullPath, file);
+console.log('Project Briefs [id] page created.');
