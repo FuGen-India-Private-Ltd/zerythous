@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronRight, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { submitProjectBrief } from "@/app/actions/submit-brief";
 
 type ProjectData = {
   type: string;
@@ -39,6 +40,8 @@ const BUDGETS = ["< ₹5L", "₹5L-₹10L", "₹10L-₹25L", "₹25L+"];
 export default function ProjectBuilder() {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<ProjectData>(initialData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const updateData = (field: keyof ProjectData, value: any) => {
     setData(prev => ({ ...prev, [field]: value }));
@@ -47,11 +50,27 @@ export default function ProjectBuilder() {
   const toggleNeed = (need: string) => {
     setData(prev => ({
       ...prev,
-      needs: prev.needs.includes(need) ? prev.needs.filter(n => n !== need) : [...prev.needs, need]
     }));
   };
 
-  const nextStep = () => setStep(s => Math.min(s + 1, 6));
+  const handleNext = async () => {
+    if (step === 5) {
+      if (canProceed()) {
+        setIsSubmitting(true);
+        setSubmitError("");
+        const res = await submitProjectBrief(data);
+        setIsSubmitting(false);
+        if (res.success) {
+          setStep(6);
+        } else {
+          setSubmitError(res.error || "Something went wrong.");
+        }
+      }
+    } else if (canProceed()) {
+      setStep(s => Math.min(s + 1, 6));
+    }
+  };
+
   const prevStep = () => setStep(s => Math.max(s - 1, 1));
 
   const canProceed = () => {
@@ -111,7 +130,7 @@ export default function ProjectBuilder() {
                       {PROJECT_TYPES.map(type => (
                         <button
                           key={type}
-                          onClick={() => { updateData('type', type); setTimeout(nextStep, 300); }}
+                          onClick={() => { updateData('type', type); setTimeout(handleNext, 300); }}
                           className={cn(
                             "py-6 px-4 border rounded-xl text-sm font-medium tracking-wide transition-all duration-300 uppercase",
                             data.type === type ? "bg-[#09090B] text-white border-[#09090B]" : "bg-white text-[#09090B] border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.3)] hover:bg-[#FAFAF9]"
@@ -151,7 +170,7 @@ export default function ProjectBuilder() {
                       {TIMELINES.map(time => (
                         <button
                           key={time}
-                          onClick={() => { updateData('timeline', time); setTimeout(nextStep, 300); }}
+                          onClick={() => { updateData('timeline', time); setTimeout(handleNext, 300); }}
                           className={cn(
                             "py-6 px-4 border rounded-xl text-sm font-medium tracking-wide transition-all duration-300 uppercase",
                             data.timeline === time ? "bg-[#09090B] text-white border-[#09090B]" : "bg-white text-[#09090B] border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.3)] hover:bg-[#FAFAF9]"
@@ -171,7 +190,7 @@ export default function ProjectBuilder() {
                       {BUDGETS.map(b => (
                         <button
                           key={b}
-                          onClick={() => { updateData('budget', b); setTimeout(nextStep, 300); }}
+                          onClick={() => { updateData('budget', b); setTimeout(handleNext, 300); }}
                           className={cn(
                             "py-6 px-4 border rounded-xl text-sm font-medium tracking-wide transition-all duration-300 uppercase",
                             data.budget === b ? "bg-[#09090B] text-white border-[#09090B]" : "bg-white text-[#09090B] border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.3)] hover:bg-[#FAFAF9]"
@@ -195,6 +214,7 @@ export default function ProjectBuilder() {
                       <input type="tel" placeholder="Phone (Optional)" value={data.phone} onChange={e => updateData('phone', e.target.value)} className="w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-lg px-4 py-4 text-[#09090B] focus:outline-none focus:border-accent-purple transition-colors md:col-span-2" />
                       <textarea placeholder="Brief Description (Optional)" value={data.description} onChange={e => updateData('description', e.target.value)} className="w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-lg px-4 py-4 text-[#09090B] focus:outline-none focus:border-accent-purple transition-colors md:col-span-2 h-32 resize-none" />
                     </div>
+                    {submitError && <div className="text-red-500 mt-4 text-sm">{submitError}</div>}
                   </div>
                 )}
 
@@ -229,14 +249,8 @@ export default function ProjectBuilder() {
                     </div>
 
                     <p className="text-[#52525B] text-sm mb-6 max-w-lg">
-                      Online booking is currently being configured.
+                      We'll review your requirements and get back to you shortly.
                     </p>
-
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-md mx-auto mb-6">
-                      <button className="flex-1 py-4 bg-[#09090B] text-white font-medium rounded-lg hover:bg-accent-purple transition-colors flex items-center justify-center">
-                        START THE CONVERSATION <ArrowRight size={16} className="ml-2" />
-                      </button>
-                    </div>
 
                     <div className="flex gap-6 font-mono text-[10px] text-[#71717A] uppercase tracking-widest">
                       <a href="mailto:zerythous345@gmail.com" className="hover:text-accent-purple transition-colors">EMAIL US</a>
@@ -258,14 +272,15 @@ export default function ProjectBuilder() {
               ) : <div />}
               
               <button 
-                onClick={nextStep}
-                disabled={!canProceed()}
+                onClick={handleNext}
+                disabled={!canProceed() || isSubmitting}
                 className={cn(
                   "flex items-center px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300",
-                  canProceed() ? "bg-[#09090B] text-white hover:bg-accent-purple" : "bg-[rgba(0,0,0,0.05)] text-[#A1A1AA] cursor-not-allowed"
+                  (canProceed() && !isSubmitting) ? "bg-[#09090B] text-white hover:bg-accent-purple" : "bg-[rgba(0,0,0,0.05)] text-[#A1A1AA] cursor-not-allowed"
                 )}
               >
-                {step === 5 ? "GENERATE BRIEF" : "NEXT STEP"} <ChevronRight size={16} className="ml-2" />
+                {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : (step === 5 ? "GENERATE BRIEF" : "NEXT STEP")} 
+                {!isSubmitting && <ChevronRight size={16} className="ml-2" />}
               </button>
             </div>
           )}
