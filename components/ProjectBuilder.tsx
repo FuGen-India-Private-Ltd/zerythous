@@ -35,7 +35,7 @@ const initialData: ProjectData = {
 const PROJECT_TYPES = ["Web App", "AI Product", "SaaS", "Mobile App", "Internal Tool", "API", "Other"];
 const PROJECT_NEEDS = ["Frontend", "Backend", "AI", "Database", "Authentication", "Cloud", "UI/UX"];
 const TIMELINES = ["ASAP", "1-3 MONTHS", "3-6 MONTHS", "FLEXIBLE"];
-const BUDGETS = ["< ₹5L", "₹5L-₹10L", "₹10L-₹25L", "₹25L+"];
+const BUDGETS = ["< $1k", "$1k - $2k", "$2k - $5k", "$5k+"];
 
 export default function ProjectBuilder() {
   const [step, setStep] = useState(1);
