@@ -6,6 +6,11 @@ export async function updateSession(request: NextRequest) {
     request,
   })
 
+  // If env vars are missing (e.g. on Vercel before setup), do not crash the app
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    return supabaseResponse
+  }
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
