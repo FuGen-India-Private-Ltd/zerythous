@@ -50,6 +50,7 @@ export default function ProjectBuilder() {
   const toggleNeed = (need: string) => {
     setData(prev => ({
       ...prev,
+      needs: prev.needs.includes(need) ? prev.needs.filter(n => n !== need) : [...prev.needs, need]
     }));
   };
 
