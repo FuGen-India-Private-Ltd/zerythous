@@ -4,9 +4,10 @@ import { revalidatePath } from "next/cache"
 import Link from "next/link"
 import { ArrowLeft, Mail, Phone, Calendar } from "lucide-react"
 
-export default async function ContactDetailPage({ params }: { params: { id: string } }) {
+export default async function ContactDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
-  const { data: contact } = await supabase.from("contact_messages").select("*").eq("id", params.id).single()
+  const { data: contact } = await supabase.from("contact_messages").select("*").eq("id", id).single()
 
   if (!contact) {
     redirect("/admin/contacts")
@@ -16,8 +17,11 @@ export default async function ContactDetailPage({ params }: { params: { id: stri
     "use server"
     const status = formData.get("status") as string
     const supabase = await createClient()
-    await supabase.from("contact_messages").update({ status }).eq("id", params.id)
-    revalidatePath(`/admin/contacts/${params.id}`)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    await supabase.from("contact_messages").update({ status }).eq("id", id)
+    revalidatePath(`/admin/contacts/${id}`)
     revalidatePath("/admin/contacts")
   }
 

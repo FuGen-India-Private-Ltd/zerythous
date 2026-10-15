@@ -6,6 +6,13 @@ import { revalidatePath } from "next/cache"
 export async function updateBriefStatus(id: string, status: string) {
   const supabase = await createClient()
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) {
+    return { success: false, error: "Unauthorized" }
+  }
+
   const { error } = await supabase
     .from("project_briefs")
     .update({ status })

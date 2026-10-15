@@ -2,9 +2,10 @@ import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import Link from "next/link"
 
-export default async function ContactsPage({ searchParams }: { searchParams: { filter?: string } }) {
+export default async function ContactsPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
   const supabase = await createClient()
-  const filter = searchParams.filter || 'all';
+  const resolvedSearchParams = await searchParams
+  const filter = resolvedSearchParams?.filter || 'all';
 
   let query = supabase.from("contact_messages").select("*").order("created_at", { ascending: false })
   if (filter !== 'all') {
@@ -18,6 +19,9 @@ export default async function ContactsPage({ searchParams }: { searchParams: { f
     const id = formData.get("id") as string
     const status = formData.get("status") as string
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
     await supabase.from("contact_messages").update({ status }).eq("id", id)
     revalidatePath("/admin/contacts")
   }

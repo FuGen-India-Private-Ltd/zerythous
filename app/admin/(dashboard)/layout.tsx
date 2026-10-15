@@ -25,6 +25,11 @@ export default async function AdminLayout({
     .eq("user_id", user.id)
     .single()
 
+  if (!profile) {
+    await supabase.auth.signOut()
+    redirect("/admin/login")
+  }
+
   return (
     <div className="min-h-screen bg-[#070707] text-white flex font-sans selection:bg-accent-purple/30 selection:text-white">
       <Toaster position="top-right" toastOptions={{ style: { background: '#0D0D0F', color: '#fff', border: '1px solid rgba(255,255,255,0.08)' } }} />

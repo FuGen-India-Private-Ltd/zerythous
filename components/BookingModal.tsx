@@ -1,15 +1,17 @@
-"use client";
-
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { submitContact } from "@/app/actions/submit-contact";
+import { CelebrationModal } from "@/components/CelebrationModal";
 import { cn } from "@/lib/utils";
 
 export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [referenceId, setReferenceId] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -17,16 +19,22 @@ export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onC
     setError("");
 
     const formData = new FormData(e.currentTarget);
+    const name = String(formData.get("name") || "Partner");
+    setClientName(name);
+
     const res = await submitContact(formData);
 
     setIsSubmitting(false);
 
     if (res.success) {
       setSubmitted(true);
+      setReferenceId(res.referenceId || "ZTX-920148");
+      setShowCelebration(true);
     } else {
       setError(res.error || "Failed to submit message.");
     }
   };
+
 
   return (
     <AnimatePresence>
@@ -112,6 +120,17 @@ export default function BookingModal({ isOpen, onClose }: { isOpen: boolean; onC
           </motion.div>
         </div>
       )}
+
+      <CelebrationModal
+        isOpen={showCelebration}
+        onClose={() => {
+          setShowCelebration(false);
+          onClose();
+        }}
+        referenceId={referenceId}
+        clientName={clientName}
+        type="contact"
+      />
     </AnimatePresence>
   );
 }

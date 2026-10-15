@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
-import { ArrowRight, ExternalLink, Activity, ShieldAlert, Zap, Search, ChevronRight, ArrowDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ExternalLink, Activity, ShieldAlert, Zap, Search, ChevronRight, ArrowDown, Layers } from "lucide-react";
+import { CaseStudyModal, CaseStudyData } from "@/components/CaseStudyModal";
+import { CASE_STUDIES } from "@/lib/data/case-studies";
 
 const GithubIcon = ({ size = 24 }: { size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -13,10 +14,13 @@ const GithubIcon = ({ size = 24 }: { size?: number }) => (
 );
 
 export default function SelectedWork() {
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [selectedCaseStudy, setSelectedCaseStudy] = useState<CaseStudyData | null>(null);
+
   return (
     <section id="work" className="py-24 md:py-48 bg-[#FFFFFF]">
       <div className="container mx-auto px-6 md:px-12">
-        <div className="mb-24 md:mb-40">
+        <div className="mb-20 md:mb-28">
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -29,10 +33,32 @@ export default function SelectedWork() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-7xl lg:text-[100px] font-medium tracking-tight text-[#050505] leading-none"
+            className="text-5xl md:text-7xl lg:text-[100px] font-medium tracking-tight text-[#050505] leading-none mb-10"
           >
             Built for the <span className="text-[#52525B]">real world.</span>
           </motion.h2>
+
+          {/* Interactive Category Filter Pills */}
+          <div className="flex flex-wrap gap-2.5">
+            {[
+              { id: "all", label: "ALL ARCHITECTURES (4)" },
+              { id: "ai", label: "AI & MULTI-AGENT (3)" },
+              { id: "saas", label: "INTELLIGENT SAAS (1)" },
+              { id: "realtime", label: "REAL-TIME & WEBSOCKETS (1)" },
+            ].map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-4 py-2 rounded-full text-xs font-mono tracking-wider transition-all duration-300 ${
+                  activeCategory === cat.id
+                    ? "bg-[#09090B] text-white shadow-md"
+                    : "bg-[#FAFAFA] text-[#52525B] border border-[rgba(0,0,0,0.08)] hover:text-[#09090B] hover:bg-[#F4F4F5]"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="space-y-32 md:space-y-48">
@@ -123,15 +149,27 @@ export default function SelectedWork() {
                   An offline-first AI-powered disaster response and emergency coordination ecosystem.
                 </p>
               </div>
-              <div className="flex flex-col gap-4">
-                <a href="https://rescueai-ai.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between px-6 py-4 border border-[rgba(0,0,0,0.15)] rounded-md hover:bg-black hover:text-white text-[#050505] transition-all duration-300 group/btn">
-                  <span className="font-medium text-sm tracking-wide">VIEW LIVE PROJECT</span>
-                  <ExternalLink size={16} className="group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-                </a>
-                <a href="https://github.com/FuGen-India-Private-Ltd/rescue-ai" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between px-6 py-4 border border-[rgba(0,0,0,0.08)] rounded-md hover:bg-[rgba(0,0,0,0.05)] text-[#52525B] hover:text-[#050505] transition-all duration-300">
-                  <span className="font-medium text-sm tracking-wide">VIEW GITHUB</span>
-                  <GithubIcon size={16} />
-                </a>
+              <div className="flex flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCaseStudy(CASE_STUDIES.rescueai)}
+                  className="flex items-center justify-between px-6 py-4 bg-[#09090B] text-white rounded-md hover:bg-neutral-800 transition-all duration-300 group/btn shadow-md text-left"
+                >
+                  <span className="font-semibold text-sm tracking-wide flex items-center gap-2">
+                    <Layers size={16} className="text-emerald-400" /> EXPLORE ARCHITECTURE SPEC
+                  </span>
+                  <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform text-emerald-400" />
+                </button>
+                <div className="grid grid-cols-2 gap-3">
+                  <a href="https://rescueai-ai.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 py-3.5 border border-[rgba(0,0,0,0.15)] rounded-md hover:bg-black hover:text-white text-[#050505] transition-all duration-300">
+                    <span className="font-medium text-xs tracking-wide mr-2">LIVE DEMO</span>
+                    <ExternalLink size={14} />
+                  </a>
+                  <a href="https://github.com/FuGen-India-Private-Ltd/rescue-ai" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 py-3.5 border border-[rgba(0,0,0,0.08)] rounded-md hover:bg-[rgba(0,0,0,0.05)] text-[#52525B] hover:text-[#050505] transition-all duration-300">
+                    <span className="font-medium text-xs tracking-wide mr-2">GITHUB</span>
+                    <GithubIcon size={14} />
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -194,15 +232,27 @@ export default function SelectedWork() {
                   Intelligent resume building with real-time ATS scoring, AI recommendations, and career insights.
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a href="https://resume-app-ten-nu.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-6 py-4 border border-[rgba(0,0,0,0.15)] rounded-md hover:bg-black hover:text-white text-[#050505] transition-all duration-300">
-                  <span className="font-medium text-sm tracking-wide mr-2">LIVE</span>
-                  <ExternalLink size={16} />
-                </a>
-                <a href="https://github.com/theakashr/Ai-Resume-Builder" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-6 py-4 border border-[rgba(0,0,0,0.08)] rounded-md hover:bg-[rgba(0,0,0,0.05)] text-[#52525B] hover:text-[#050505] transition-all duration-300">
-                  <span className="font-medium text-sm tracking-wide mr-2">GITHUB</span>
-                  <GithubIcon size={16} />
-                </a>
+              <div className="flex flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCaseStudy(CASE_STUDIES.resumeai)}
+                  className="flex items-center justify-between px-6 py-4 bg-[#09090B] text-white rounded-md hover:bg-neutral-800 transition-all duration-300 group/btn shadow-md text-left"
+                >
+                  <span className="font-semibold text-sm tracking-wide flex items-center gap-2">
+                    <Layers size={16} className="text-emerald-400" /> EXPLORE ARCHITECTURE SPEC
+                  </span>
+                  <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform text-emerald-400" />
+                </button>
+                <div className="grid grid-cols-2 gap-3">
+                  <a href="https://resume-app-ten-nu.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 py-3.5 border border-[rgba(0,0,0,0.15)] rounded-md hover:bg-black hover:text-white text-[#050505] transition-all duration-300">
+                    <span className="font-medium text-xs tracking-wide mr-2">LIVE APP</span>
+                    <ExternalLink size={14} />
+                  </a>
+                  <a href="https://github.com/theakashr/Ai-Resume-Builder" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-4 py-3.5 border border-[rgba(0,0,0,0.08)] rounded-md hover:bg-[rgba(0,0,0,0.05)] text-[#52525B] hover:text-[#050505] transition-all duration-300">
+                    <span className="font-medium text-xs tracking-wide mr-2">GITHUB</span>
+                    <GithubIcon size={14} />
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -264,10 +314,20 @@ export default function SelectedWork() {
                   Automated routing, sentiment analysis, and initial response generation using RAG and LLM coordination.
                 </p>
               </div>
-              <div>
-                <a href="https://github.com/theakashr/AI-Support-Triage-Agent" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-6 py-4 border border-[rgba(0,0,0,0.15)] rounded-md hover:bg-black hover:text-white text-[#050505] transition-all duration-300">
-                  <span className="font-medium text-sm tracking-wide mr-2">VIEW SOURCE</span>
-                  <GithubIcon size={16} />
+              <div className="flex flex-col gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCaseStudy(CASE_STUDIES.supportTriage)}
+                  className="flex items-center justify-between px-6 py-4 bg-[#09090B] text-white rounded-md hover:bg-neutral-800 transition-all duration-300 group/btn shadow-md text-left"
+                >
+                  <span className="font-semibold text-sm tracking-wide flex items-center gap-2">
+                    <Layers size={16} className="text-emerald-400" /> EXPLORE ARCHITECTURE SPEC
+                  </span>
+                  <ChevronRight size={16} className="group-hover/btn:translate-x-1 transition-transform text-emerald-400" />
+                </button>
+                <a href="https://github.com/theakashr/AI-Support-Triage-Agent" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center px-6 py-3.5 border border-[rgba(0,0,0,0.15)] rounded-md hover:bg-black hover:text-white text-[#050505] transition-all duration-300">
+                  <span className="font-medium text-xs tracking-wide mr-2">VIEW SOURCE REPOSITORY</span>
+                  <GithubIcon size={14} />
                 </a>
               </div>
             </div>
@@ -438,6 +498,11 @@ export default function SelectedWork() {
 
         </div>
       </div>
+
+      <CaseStudyModal
+        project={selectedCaseStudy}
+        onClose={() => setSelectedCaseStudy(null)}
+      />
     </section>
   );
 }

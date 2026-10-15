@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import Link from "next/link"
+import InquiryStatusSelect from "@/components/admin/InquiryStatusSelect"
 
 export default async function InquiriesPage() {
   const supabase = await createClient()
@@ -11,6 +12,9 @@ export default async function InquiriesPage() {
     const id = formData.get("id") as string
     const status = formData.get("status") as string
     const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
     await supabase.from("project_inquiries").update({ status }).eq("id", id)
     revalidatePath("/admin/inquiries")
   }
@@ -58,21 +62,7 @@ export default async function InquiriesPage() {
                     <td className="p-4">
                       <form action={updateStatus}>
                         <input type="hidden" name="id" value={inquiry.id} />
-                        <select 
-                          name="status" 
-                          defaultValue={inquiry.status}
-                          onChange={(e) => e.target.form?.requestSubmit()}
-                          className="bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.1)] text-xs text-white rounded px-2 py-1 focus:border-accent-purple outline-none"
-                        >
-                          <option value="new">New</option>
-                          <option value="reviewing">Reviewing</option>
-                          <option value="contacted">Contacted</option>
-                          <option value="proposal">Proposal</option>
-                          <option value="in_progress">In Progress</option>
-                          <option value="completed">Completed</option>
-                          <option value="rejected">Rejected</option>
-                          <option value="closed">Closed</option>
-                        </select>
+                        <InquiryStatusSelect defaultValue={inquiry.status} />
                       </form>
                     </td>
                     <td className="p-4 text-[#A1A1AA] text-xs">{new Date(inquiry.created_at).toLocaleDateString()}</td>

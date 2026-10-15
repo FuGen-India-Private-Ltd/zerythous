@@ -2,11 +2,12 @@ import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 import Link from "next/link"
-import { ArrowLeft, Mail, Phone, Building, Calendar } from "lucide-react"
+import { ArrowLeft, Mail, Phone, Building } from "lucide-react"
 
-export default async function ProjectBriefDetailPage({ params }: { params: { id: string } }) {
+export default async function ProjectBriefDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
-  const { data: brief } = await supabase.from("project_briefs").select("*").eq("id", params.id).single()
+  const { data: brief } = await supabase.from("project_briefs").select("*").eq("id", id).single()
 
   if (!brief) {
     redirect("/admin/project-briefs")
@@ -16,8 +17,11 @@ export default async function ProjectBriefDetailPage({ params }: { params: { id:
     "use server"
     const status = formData.get("status") as string
     const supabase = await createClient()
-    await supabase.from("project_briefs").update({ status }).eq("id", params.id)
-    revalidatePath(`/admin/project-briefs/${params.id}`)
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    await supabase.from("project_briefs").update({ status }).eq("id", id)
+    revalidatePath(`/admin/project-briefs/${id}`)
     revalidatePath("/admin/project-briefs")
   }
 

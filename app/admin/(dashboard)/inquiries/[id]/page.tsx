@@ -3,9 +3,10 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Mail, Phone, Building } from "lucide-react"
 
-export default async function InquiryDetailPage({ params }: { params: { id: string } }) {
+export default async function InquiryDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
-  const { data: inquiry } = await supabase.from("project_inquiries").select("*").eq("id", params.id).single()
+  const { data: inquiry } = await supabase.from("project_inquiries").select("*").eq("id", id).single()
 
   if (!inquiry) {
     redirect("/admin/inquiries")

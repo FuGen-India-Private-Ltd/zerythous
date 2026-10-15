@@ -38,7 +38,8 @@ export default function Footer() {
           <p className="font-mono text-[10px] text-[#52525B] tracking-widest uppercase">
             © 2026 Zerythous
           </p>
-          <div className="flex gap-4 mt-4 sm:mt-0 font-mono text-[10px] text-[#52525B] tracking-widest uppercase">
+          <div className="flex items-center gap-6 mt-4 sm:mt-0 font-mono text-[10px] text-[#52525B] tracking-widest uppercase">
+            <Link href="/admin/login" className="hover:text-[#050505] transition-colors">Admin Portal</Link>
             <span>India</span>
             <span>Remote</span>
           </div>

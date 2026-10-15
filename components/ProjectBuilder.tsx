@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import { ChevronRight, ArrowLeft, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { submitProjectBrief } from "@/app/actions/submit-brief";
+import { CelebrationModal } from "@/components/CelebrationModal";
 
 type ProjectData = {
   type: string;
@@ -42,8 +43,10 @@ export default function ProjectBuilder() {
   const [data, setData] = useState<ProjectData>(initialData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
+  const [referenceId, setReferenceId] = useState("");
+  const [showCelebration, setShowCelebration] = useState(false);
 
-  const updateData = (field: keyof ProjectData, value: any) => {
+  const updateData = <K extends keyof ProjectData>(field: K, value: ProjectData[K]) => {
     setData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -62,6 +65,8 @@ export default function ProjectBuilder() {
         const res = await submitProjectBrief(data);
         setIsSubmitting(false);
         if (res.success) {
+          setReferenceId(res.referenceId || "ZTX-ARCH-849201");
+          setShowCelebration(true);
           setStep(6);
         } else {
           setSubmitError(res.error || "Something went wrong.");
@@ -250,7 +255,7 @@ export default function ProjectBuilder() {
                     </div>
 
                     <p className="text-[#52525B] text-sm mb-6 max-w-lg">
-                      We'll review your requirements and get back to you shortly.
+                      We&apos;ll review your requirements and get back to you shortly.
                     </p>
 
                     <div className="flex gap-6 font-mono text-[10px] text-[#71717A] uppercase tracking-widest">
@@ -262,6 +267,22 @@ export default function ProjectBuilder() {
               </motion.div>
             </AnimatePresence>
           </div>
+
+          {/* Real-time Architecture Blueprint Preview */}
+          {step < 6 && (data.type !== "" || data.needs.length > 0) && (
+            <div className="bg-[#FFFFFF] px-6 md:px-8 py-3.5 border-t border-[rgba(0,0,0,0.04)] flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono">
+              <div className="flex items-center space-x-2 text-[#52525B]">
+                <span className="w-2 h-2 rounded-full bg-accent-purple animate-pulse shrink-0" />
+                <span className="font-semibold text-[#09090B]">ESTIMATED ARCHITECTURE:</span>
+                <span className="text-accent-purple font-medium">{data.type || "Custom Software"}</span>
+                {data.needs.length > 0 && <span className="text-[#52525B] hidden sm:inline">({data.needs.join(" / ")})</span>}
+              </div>
+              <div className="flex items-center space-x-4 text-[#71717A]">
+                {data.timeline && <span>TARGET: {data.timeline}</span>}
+                {data.budget && <span className="text-emerald-600 font-semibold">{data.budget}</span>}
+              </div>
+            </div>
+          )}
 
           {/* Footer Controls */}
           {step < 6 && (
@@ -287,6 +308,15 @@ export default function ProjectBuilder() {
           )}
         </div>
       </div>
+
+      <CelebrationModal
+        isOpen={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        referenceId={referenceId}
+        clientName={data.name || "Innovator"}
+        projectName={data.projectName}
+        type="project_brief"
+      />
     </section>
   );
 }
