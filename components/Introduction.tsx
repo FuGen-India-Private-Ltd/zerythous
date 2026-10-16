@@ -3,164 +3,177 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Layers, CheckCircle2 } from "lucide-react";
 
 const architectureLayers = [
   { 
     id: "user", 
-    label: "USER", 
-    details: "End-user devices, enterprise systems, and third-party integrations."
-  },
-  { 
-    id: "frontend", 
-    label: "WEB / MOBILE", 
-    details: "Next.js / React / React Native. Highly optimized, accessible, and interactive interfaces."
+    label: "01 / CLIENT & INTELLIGENCE RUNTIME", 
+    details: "Next.js 16 Edge / React 19 / Native. Zero CLS, sub-50ms First Contentful Paint, and fluid micro-interactions."
   },
   { 
     id: "api", 
-    label: "API LAYER", 
-    details: "REST APIs / Authentication / Real-Time Services / Integrations."
+    label: "02 / SECURE API GATEWAY", 
+    details: "REST APIs / GraphQL / tRPC / Tokenized Rate Limiting / Cloudflare WAF protection."
   },
   { 
     id: "logic", 
-    label: "BUSINESS LOGIC", 
-    details: "Node.js / Python / Go. Core product rules, microservices, and workflows."
+    label: "03 / CORE DOMAIN & ORCHESTRATION", 
+    details: "Node.js / Python / Go. Event loops, async workers, cron schedules, and idempotent business logic."
   },
   { 
     id: "ai", 
-    label: "AI / AGENTS", 
-    details: "Multi-Agent Systems / RAG Pipelines / AI Automation / Model Integration / Evaluation."
+    label: "04 / MULTI-AGENT SWARM & RAG", 
+    details: "LangChain / OpenAI / Gemini 2.0 / ReAct loops with hybrid dense & sparse semantic retrieval (Pinecone)."
   },
   { 
     id: "data", 
-    label: "DATABASE", 
-    details: "PostgreSQL / Redis / Vector DBs. Scalable, secure, and highly available data storage."
+    label: "05 / PERSISTENCE & ROW LEVEL SECURITY", 
+    details: "PostgreSQL / Supabase / Redis / PostGIS. Hardened with cryptographic RLS isolating tenant namespaces."
   },
   { 
     id: "cloud", 
-    label: "CLOUD INFRASTRUCTURE", 
-    details: "Deployment / Scaling / Monitoring / Security on AWS, Vercel, and Kubernetes."
+    label: "06 / CLOUD MESH & DEPLOYMENT", 
+    details: "Vercel Edge / AWS / Kubernetes. Global auto-scaling with 99.99% multi-region failover SLA."
   },
 ];
 
 const pipelineSteps = [
-  "01 DISCOVER",
-  "02 ARCHITECT",
-  "03 BUILD",
-  "04 INTEGRATE",
-  "05 DEPLOY",
-  "06 SCALE"
+  { step: "01", name: "DISCOVER", desc: "Requirements & feasibility scoping" },
+  { step: "02", name: "ARCHITECT", desc: "Topology & data boundary blueprints" },
+  { step: "03", name: "BUILD", desc: "Production code & agent implementation" },
+  { step: "04", name: "INTEGRATE", desc: "APIs, databases & security audits" },
+  { step: "05", name: "DEPLOY", desc: "Zero-downtime edge release & testing" },
+  { step: "06", name: "SCALE", desc: "Telemetry monitoring & ongoing growth" },
 ];
 
 export default function Introduction() {
   const [activeLayer, setActiveLayer] = useState<string | null>("ai");
 
   return (
-    <section className="py-24 md:py-32 bg-[#FAFAF9] border-y border-[rgba(0,0,0,0.05)] overflow-hidden">
-      <div className="container mx-auto px-6 md:px-12">
+    <section className="py-28 md:py-40 bg-background text-foreground border-y border-black/[0.06] dark:border-white/[0.06] relative overflow-hidden transition-colors duration-300">
+      {/* Background radial accent */}
+      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] rounded-full aurora-glow-purple blur-3xl pointer-events-none opacity-40" />
+
+      <div className="container mx-auto px-6 md:px-12 relative z-10">
         <div className="mb-20">
-          <p className="font-mono text-xs tracking-widest text-[#71717A] uppercase mb-6">
-            01 / WHAT WE ENGINEER
-          </p>
-          <h2 className="text-4xl md:text-6xl lg:text-[80px] font-medium tracking-tighter text-[#09090B] leading-[1.1] max-w-4xl font-heading">
-            FROM IDEA <br />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-purple/10 border border-accent-purple/20 text-accent-purple font-mono text-xs mb-4 font-semibold">
+            <Layers className="w-3.5 h-3.5" />
+            01 / ENGINEERING METHODOLOGY
+          </div>
+          <h2 className="text-4xl md:text-6xl lg:text-[84px] font-extrabold tracking-tighter text-[#09090B] dark:text-white leading-[1.05] max-w-4xl font-heading">
+            FROM INCEPTION <br />
             TO PRODUCTION <br />
-            <span className="text-accent-purple">SYSTEM.</span>
+            <span className="text-accent-purple">
+              ARCHITECTURE.
+            </span>
           </h2>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
           
-          {/* LEFT: Pipeline */}
-          <div className="w-full lg:w-1/3 flex flex-col">
-            <h3 className="font-mono text-[10px] text-[#71717A] tracking-widest uppercase mb-8 border-b border-[rgba(0,0,0,0.1)] pb-4">
-              SYSTEM PIPELINE
-            </h3>
-            <div className="flex flex-col gap-6">
-              {pipelineSteps.map((step, idx) => (
-                <div key={idx} className="flex items-center gap-4 group cursor-default">
-                  <div className="w-2 h-2 rounded-full bg-[rgba(0,0,0,0.1)] group-hover:bg-accent-purple transition-colors" />
-                  <span className="font-mono text-sm tracking-wider text-[#52525B] group-hover:text-[#09090B] transition-colors font-medium">
-                    {step}
+          {/* LEFT: Pipeline Timeline */}
+          <div className="w-full lg:w-5/12 flex flex-col">
+            <div className="text-xs font-mono text-[#71717A] dark:text-neutral-400 tracking-widest uppercase mb-8 border-b border-black/10 dark:border-white/10 pb-4 flex items-center justify-between">
+              <span>EXECUTION PROTOCOL</span>
+              <span className="text-accent-purple font-bold">6 PHASES</span>
+            </div>
+
+            <div className="space-y-4">
+              {pipelineSteps.map((step) => (
+                <div
+                  key={step.step}
+                  className="p-4 rounded-xl glass-card flex items-start gap-4 group transition-all hover:border-accent-purple/40"
+                >
+                  <span className="font-mono text-xs font-bold text-accent-purple px-2 py-1 rounded bg-accent-purple/10 border border-accent-purple/20">
+                    {step.step}
                   </span>
+                  <div>
+                    <div className="font-bold text-sm text-[#09090B] dark:text-white group-hover:text-accent-purple transition-colors">
+                      {step.name}
+                    </div>
+                    <div className="text-xs text-[#52525B] dark:text-neutral-400 mt-0.5">
+                      {step.desc}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
             
-            <div className="mt-16 p-6 bg-white border border-[rgba(0,0,0,0.08)] rounded-xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-accent-purple/5 rounded-bl-full pointer-events-none" />
-              <p className="text-sm text-[#52525B] leading-relaxed relative z-10">
-                We design comprehensive architectures that ensure your product scales seamlessly from Day 1 to Day 1000.
+            <div className="mt-8 p-5 glass-card rounded-xl border border-black/10 dark:border-white/10 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-accent-purple/10 rounded-bl-full pointer-events-none" />
+              <div className="flex items-center gap-2 text-xs font-mono text-accent-purple mb-2 font-bold">
+                <CheckCircle2 className="w-4 h-4" /> GUARANTEED PERFORMANCE
+              </div>
+              <p className="text-xs text-[#52525B] dark:text-neutral-300 leading-relaxed relative z-10">
+                Every software system we release adheres to strict Lighthouse performance scores (95-100), automated unit & integration testing, and zero-trust security postures.
               </p>
             </div>
           </div>
 
           {/* RIGHT: Architecture Board */}
-          <div className="w-full lg:w-2/3">
-            <h3 className="font-mono text-[10px] text-[#71717A] tracking-widest uppercase mb-8 border-b border-[rgba(0,0,0,0.1)] pb-4">
-              INTERACTIVE ARCHITECTURE BOARD
-            </h3>
+          <div className="w-full lg:w-7/12">
+            <div className="text-xs font-mono text-[#71717A] dark:text-neutral-400 tracking-widest uppercase mb-8 border-b border-black/10 dark:border-white/10 pb-4 flex items-center justify-between">
+              <span>INTERACTIVE SYSTEM TOPOLOGY</span>
+              <span className="text-[#71717A] dark:text-neutral-500">CLICK TO EXPAND LAYER</span>
+            </div>
             
-            <div className="w-full flex flex-col items-center max-w-lg mx-auto relative">
-              {architectureLayers.map((layer, idx) => (
-                <div key={layer.id} className="w-full flex flex-col items-center">
-                  <button
-                    onClick={() => setActiveLayer(layer.id === activeLayer ? null : layer.id)}
-                    className={cn(
-                      "w-full py-4 px-6 md:px-8 bg-white border rounded-lg transition-all duration-300 relative text-left overflow-hidden group",
-                      activeLayer === layer.id 
-                        ? "border-accent-purple/50 shadow-[0_4px_20px_rgba(124,58,237,0.1)] scale-[1.02] z-10" 
-                        : "border-[rgba(0,0,0,0.08)] hover:border-[rgba(0,0,0,0.2)] hover:bg-[#FAFAF9]"
-                    )}
-                  >
-                    {activeLayer === layer.id && (
-                      <motion.div layoutId="activeArchLayer" className="absolute left-0 top-0 bottom-0 w-1 bg-accent-purple" />
-                    )}
-                    
-                    <span className={cn(
-                      "font-mono text-sm md:text-base tracking-widest font-semibold transition-colors",
-                      activeLayer === layer.id ? "text-accent-purple" : "text-[#09090B]"
-                    )}>
-                      {layer.label}
-                    </span>
-                    
-                    <AnimatePresence>
-                      {activeLayer === layer.id && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="mt-4"
-                        >
-                          <div className="w-full h-px bg-[rgba(0,0,0,0.05)] mb-4" />
-                          <p className="text-sm text-[#52525B] font-mono leading-relaxed">
-                            {layer.details}
-                          </p>
-                        </motion.div>
+            <div className="w-full flex flex-col items-center max-w-xl mx-auto relative">
+              {architectureLayers.map((layer, idx) => {
+                const isActive = activeLayer === layer.id;
+
+                return (
+                  <div key={layer.id} className="w-full flex flex-col items-center">
+                    <button
+                      onClick={() => setActiveLayer(isActive ? null : layer.id)}
+                      className={cn(
+                        "w-full py-4 px-6 rounded-xl transition-all duration-300 relative text-left overflow-hidden border focus:outline-none",
+                        isActive 
+                          ? "bg-white dark:bg-neutral-900 border-accent-purple shadow-xl shadow-accent-purple/15 scale-[1.02] z-10" 
+                          : "bg-white/70 dark:bg-neutral-950/70 border-black/[0.08] dark:border-white/[0.08] hover:border-accent-purple/40 hover:bg-white dark:hover:bg-neutral-900/60"
                       )}
-                    </AnimatePresence>
+                    >
+                      {isActive && (
+                        <motion.div layoutId="activeArchLayer" className="absolute left-0 top-0 bottom-0 w-1.5 bg-accent-purple" />
+                      )}
+                      
+                      <div className="flex items-center justify-between">
+                        <span className={cn(
+                          "font-mono text-xs md:text-sm tracking-wider font-bold transition-colors",
+                          isActive ? "text-accent-purple" : "text-[#09090B] dark:text-white"
+                        )}>
+                          {layer.label}
+                        </span>
+                        <span className="text-xs font-mono text-[#71717A] dark:text-neutral-500 font-bold">
+                          {isActive ? "ACTIVE" : "+"}
+                        </span>
+                      </div>
+                      
+                      <AnimatePresence>
+                        {isActive && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="mt-3 pt-3 border-t border-black/10 dark:border-white/10"
+                          >
+                            <p className="text-xs text-[#52525B] dark:text-neutral-300 font-mono leading-relaxed">
+                              {layer.details}
+                            </p>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </button>
                     
-                    {/* Animated moving packets in the background of the button */}
-                    {activeLayer === layer.id && (
-                      <div className="absolute inset-0 pointer-events-none opacity-20 overflow-hidden">
-                        <motion.div
-                          initial={{ x: "-100%" }}
-                          animate={{ x: "200%" }}
-                          transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
-                          className="w-1/2 h-full bg-gradient-to-r from-transparent via-accent-purple to-transparent"
-                        />
+                    {idx < architectureLayers.length - 1 && (
+                      <div className="h-4 flex justify-center items-center relative z-0">
+                        <div className="w-px h-full bg-black/10 dark:bg-white/10" />
+                        <ArrowDown size={10} className="text-[#71717A] dark:text-neutral-500 absolute bottom-0" />
                       </div>
                     )}
-                  </button>
-                  
-                  {idx < architectureLayers.length - 1 && (
-                    <div className="h-6 flex justify-center items-center relative z-0">
-                      <div className="w-0.5 h-full bg-[rgba(0,0,0,0.1)]" />
-                      <ArrowDown size={12} className="text-[rgba(0,0,0,0.2)] absolute bottom-0 bg-[#FAFAF9]" />
-                    </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           </div>
           

@@ -3,7 +3,8 @@ import TechMarquee from "@/components/TechMarquee";
 import Introduction from "@/components/Introduction";
 import SelectedWork from "@/components/SelectedWork";
 import Services from "@/components/Services";
-import Architecture from "@/components/Architecture";
+import ArchitecturePlayground from "@/components/ArchitecturePlayground";
+import CostEstimator from "@/components/CostEstimator";
 import WhyZerythous from "@/components/WhyZerythous";
 import Process from "@/components/Process";
 import ProjectBuilder from "@/components/ProjectBuilder";
@@ -12,13 +13,14 @@ import Contact from "@/components/Contact";
 
 export default function Home() {
   return (
-    <main>
+    <main className="bg-background text-foreground transition-colors duration-300">
       <Hero />
       <TechMarquee />
       <Introduction />
       <SelectedWork />
       <Services />
-      <Architecture />
+      <ArchitecturePlayground />
+      <CostEstimator />
       <WhyZerythous />
       <Process />
       <ProjectBuilder />

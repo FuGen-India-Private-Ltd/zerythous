@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronRight, ArrowLeft, Loader2 } from "lucide-react";
+import { ChevronRight, ArrowLeft, Loader2, Sparkles, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { submitProjectBrief } from "@/app/actions/submit-brief";
 import { CelebrationModal } from "@/components/CelebrationModal";
@@ -33,10 +33,10 @@ const initialData: ProjectData = {
   description: ""
 };
 
-const PROJECT_TYPES = ["Web App", "AI Product", "SaaS", "Mobile App", "Internal Tool", "API", "Other"];
-const PROJECT_NEEDS = ["Frontend", "Backend", "AI", "Database", "Authentication", "Cloud", "UI/UX"];
-const TIMELINES = ["ASAP", "1-3 MONTHS", "3-6 MONTHS", "FLEXIBLE"];
-const BUDGETS = ["< $1k", "$1k - $2k", "$2k - $5k", "$5k+"];
+const PROJECT_TYPES = ["AI Multi-Agent Swarm", "Intelligent SaaS Platform", "Real-Time Web Application", "Cross-Platform Mobile App", "Internal Ops & CMS", "Enterprise API Mesh", "Other"];
+const PROJECT_NEEDS = ["Custom AI & RAG", "System Architecture", "Frontend (Next.js 16)", "Backend & APIs", "Database & Supabase RLS", "Cloud Infrastructure (AWS/Vercel)", "Automated Testing", "Security Audit"];
+const TIMELINES = ["Urgent (2-4 Weeks)", "Standard (1-2 Months)", "Comprehensive (3+ Months)", "Flexible"];
+const BUDGETS = ["< $5,000", "$5,000 - $10,000", "$10,000 - $25,000", "$25,000+"];
 
 export default function ProjectBuilder() {
   const [step, setStep] = useState(1);
@@ -89,32 +89,39 @@ export default function ProjectBuilder() {
   };
 
   return (
-    <section id="project-builder" className="py-32 md:py-48 bg-[#FAFAF9]">
-      <div className="container mx-auto px-4 md:px-12">
+    <section id="project-builder" className="py-28 md:py-44 bg-background text-foreground border-t border-black/[0.06] dark:border-white/[0.06] relative overflow-hidden transition-colors duration-300">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[650px] rounded-full aurora-glow-purple blur-3xl pointer-events-none opacity-25" />
+      <div className="absolute inset-0 grid-pattern-dual pointer-events-none opacity-30" />
+
+      <div className="container mx-auto px-4 md:px-12 relative z-10">
         <div className="mb-16">
-          <p className="font-mono text-xs tracking-widest text-[#71717A] uppercase mb-6">
-            08 / Start a Project
-          </p>
-          <h2 className="text-4xl md:text-6xl font-medium tracking-tight text-[#09090B] font-heading">
-            HAVE A <br/>
-            SYSTEM TO BUILD?
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-purple/10 border border-accent-purple/20 text-accent-purple font-mono text-xs mb-4 font-semibold">
+            <Sparkles className="w-3.5 h-3.5" />
+            05 / ARCHITECTURE BRIEF BUILDER
+          </div>
+          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-[84px] font-extrabold tracking-tight text-[#09090B] dark:text-white leading-none font-heading">
+            HAVE A SYSTEM <br/>
+            <span className="text-accent-purple">
+              TO ENGINEER?
+            </span>
           </h2>
         </div>
 
-        <div className="w-full max-w-5xl mx-auto bg-white border border-[rgba(0,0,0,0.08)] rounded-2xl shadow-xl overflow-hidden flex flex-col min-h-[600px]">
+        <div className="w-full max-w-5xl mx-auto glass-card bg-white/80 dark:bg-neutral-950/90 border border-black/10 dark:border-white/10 rounded-2xl shadow-xl dark:shadow-2xl overflow-hidden flex flex-col min-h-[600px]">
           
           {/* Header Progress */}
-          <div className="bg-[#FAFAF9] p-6 md:p-8 flex items-center justify-between border-b border-[rgba(0,0,0,0.05)]">
+          <div className="bg-neutral-100/70 dark:bg-neutral-900/60 p-6 md:p-8 flex items-center justify-between border-b border-black/[0.08] dark:border-white/[0.08]">
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5, 6].map(i => (
                 <div key={i} className={cn(
-                  "w-8 md:w-12 h-1 rounded-full transition-colors duration-300",
-                  i < step ? "bg-[#09090B]" : i === step ? "bg-accent-purple" : "bg-[rgba(0,0,0,0.1)]"
+                  "w-8 md:w-12 h-1.5 rounded-full transition-all duration-300",
+                  i < step ? "bg-accent-purple/70" : i === step ? "bg-accent-purple shadow-md shadow-accent-purple/50" : "bg-neutral-200 dark:bg-neutral-800"
                 )} />
               ))}
             </div>
-            <div className="font-mono text-xs text-[#71717A]">
-              STEP {step} OF 6
+            <div className="font-mono text-xs text-[#71717A] dark:text-neutral-400 uppercase tracking-wider font-semibold">
+              PHASE {step} OF 6
             </div>
           </div>
 
@@ -131,15 +138,19 @@ export default function ProjectBuilder() {
               >
                 {step === 1 && (
                   <div>
-                    <h3 className="text-2xl md:text-4xl font-medium text-[#09090B] mb-10 font-heading uppercase">What are you building?</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#09090B] dark:text-white mb-8 font-heading uppercase">
+                      What are you architecting?
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5">
                       {PROJECT_TYPES.map(type => (
                         <button
                           key={type}
                           onClick={() => { updateData('type', type); setTimeout(handleNext, 300); }}
                           className={cn(
-                            "py-6 px-4 border rounded-xl text-sm font-medium tracking-wide transition-all duration-300 uppercase",
-                            data.type === type ? "bg-[#09090B] text-white border-[#09090B]" : "bg-white text-[#09090B] border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.3)] hover:bg-[#FAFAF9]"
+                            "py-5 px-4 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 uppercase border text-left",
+                            data.type === type 
+                              ? "bg-[#09090B] text-white dark:bg-white dark:text-[#09090B] border-accent-purple shadow-md font-bold" 
+                              : "bg-white/70 dark:bg-neutral-900/70 text-[#52525B] dark:text-neutral-300 border-black/[0.08] dark:border-white/[0.08] hover:border-accent-purple/40 hover:bg-white dark:hover:bg-neutral-800"
                           )}
                         >
                           {type}
@@ -151,15 +162,19 @@ export default function ProjectBuilder() {
 
                 {step === 2 && (
                   <div>
-                    <h3 className="text-2xl md:text-4xl font-medium text-[#09090B] mb-10 font-heading uppercase">What do you need?</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#09090B] dark:text-white mb-8 font-heading uppercase">
+                      Required Architectural Capabilities
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 mb-8">
                       {PROJECT_NEEDS.map(need => (
                         <button
                           key={need}
                           onClick={() => toggleNeed(need)}
                           className={cn(
-                            "py-6 px-4 border rounded-xl text-sm font-medium tracking-wide transition-all duration-300 uppercase",
-                            data.needs.includes(need) ? "bg-[#09090B] text-white border-[#09090B]" : "bg-white text-[#09090B] border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.3)] hover:bg-[#FAFAF9]"
+                            "py-5 px-4 rounded-xl text-xs sm:text-sm font-semibold tracking-wide transition-all duration-300 uppercase border text-left",
+                            data.needs.includes(need) 
+                              ? "bg-[#09090B] text-white dark:bg-white dark:text-[#09090B] border-accent-purple shadow-md font-bold" 
+                              : "bg-white/70 dark:bg-neutral-900/70 text-[#52525B] dark:text-neutral-300 border-black/[0.08] dark:border-white/[0.08] hover:border-accent-purple/40 hover:bg-white dark:hover:bg-neutral-800"
                           )}
                         >
                           {need}
@@ -171,15 +186,19 @@ export default function ProjectBuilder() {
 
                 {step === 3 && (
                   <div>
-                    <h3 className="text-2xl md:text-4xl font-medium text-[#09090B] mb-10 font-heading uppercase">Timeline</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#09090B] dark:text-white mb-8 font-heading uppercase">
+                      Target Production Timeline
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {TIMELINES.map(time => (
                         <button
                           key={time}
                           onClick={() => { updateData('timeline', time); setTimeout(handleNext, 300); }}
                           className={cn(
-                            "py-6 px-4 border rounded-xl text-sm font-medium tracking-wide transition-all duration-300 uppercase",
-                            data.timeline === time ? "bg-[#09090B] text-white border-[#09090B]" : "bg-white text-[#09090B] border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.3)] hover:bg-[#FAFAF9]"
+                            "py-6 px-5 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 uppercase border text-left",
+                            data.timeline === time 
+                              ? "bg-[#09090B] text-white dark:bg-white dark:text-[#09090B] border-accent-purple shadow-md font-bold" 
+                              : "bg-white/70 dark:bg-neutral-900/70 text-[#52525B] dark:text-neutral-300 border-black/[0.08] dark:border-white/[0.08] hover:border-accent-purple/40 hover:bg-white dark:hover:bg-neutral-800"
                           )}
                         >
                           {time}
@@ -191,15 +210,19 @@ export default function ProjectBuilder() {
 
                 {step === 4 && (
                   <div>
-                    <h3 className="text-2xl md:text-4xl font-medium text-[#09090B] mb-10 font-heading uppercase">Budget</h3>
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#09090B] dark:text-white mb-8 font-heading uppercase">
+                      Allocated Capital / Budget Range
+                    </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {BUDGETS.map(b => (
                         <button
                           key={b}
                           onClick={() => { updateData('budget', b); setTimeout(handleNext, 300); }}
                           className={cn(
-                            "py-6 px-4 border rounded-xl text-sm font-medium tracking-wide transition-all duration-300 uppercase",
-                            data.budget === b ? "bg-[#09090B] text-white border-[#09090B]" : "bg-white text-[#09090B] border-[rgba(0,0,0,0.1)] hover:border-[rgba(0,0,0,0.3)] hover:bg-[#FAFAF9]"
+                            "py-6 px-5 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 uppercase border text-left",
+                            data.budget === b 
+                              ? "bg-[#09090B] text-white dark:bg-white dark:text-[#09090B] border-accent-purple shadow-md font-bold" 
+                              : "bg-white/70 dark:bg-neutral-900/70 text-[#52525B] dark:text-neutral-300 border-black/[0.08] dark:border-white/[0.08] hover:border-accent-purple/40 hover:bg-white dark:hover:bg-neutral-800"
                           )}
                         >
                           {b}
@@ -211,56 +234,95 @@ export default function ProjectBuilder() {
 
                 {step === 5 && (
                   <div>
-                    <h3 className="text-2xl md:text-4xl font-medium text-[#09090B] mb-10 font-heading uppercase">Contact</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <input type="text" placeholder="Name *" value={data.name} onChange={e => updateData('name', e.target.value)} className="w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-lg px-4 py-4 text-[#09090B] focus:outline-none focus:border-accent-purple transition-colors" />
-                      <input type="email" placeholder="Email *" value={data.email} onChange={e => updateData('email', e.target.value)} className="w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-lg px-4 py-4 text-[#09090B] focus:outline-none focus:border-accent-purple transition-colors" />
-                      <input type="text" placeholder="Company (Optional)" value={data.company} onChange={e => updateData('company', e.target.value)} className="w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-lg px-4 py-4 text-[#09090B] focus:outline-none focus:border-accent-purple transition-colors" />
-                      <input type="text" placeholder="Project Name *" value={data.projectName} onChange={e => updateData('projectName', e.target.value)} className="w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-lg px-4 py-4 text-[#09090B] focus:outline-none focus:border-accent-purple transition-colors" />
-                      <input type="tel" placeholder="Phone (Optional)" value={data.phone} onChange={e => updateData('phone', e.target.value)} className="w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-lg px-4 py-4 text-[#09090B] focus:outline-none focus:border-accent-purple transition-colors md:col-span-2" />
-                      <textarea placeholder="Brief Description (Optional)" value={data.description} onChange={e => updateData('description', e.target.value)} className="w-full bg-white border border-[rgba(0,0,0,0.1)] rounded-lg px-4 py-4 text-[#09090B] focus:outline-none focus:border-accent-purple transition-colors md:col-span-2 h-32 resize-none" />
+                    <h3 className="text-2xl md:text-3xl font-bold text-[#09090B] dark:text-white mb-8 font-heading uppercase">
+                      Primary Contact & Scope Details
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      <input 
+                        type="text" 
+                        placeholder="Your Name *" 
+                        value={data.name} 
+                        onChange={e => updateData('name', e.target.value)} 
+                        className="w-full bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-xl px-4 py-4 text-[#09090B] dark:text-white placeholder-[#71717A] dark:placeholder-neutral-500 focus:outline-none focus:border-accent-purple transition-colors text-sm" 
+                      />
+                      <input 
+                        type="email" 
+                        placeholder="Work Email *" 
+                        value={data.email} 
+                        onChange={e => updateData('email', e.target.value)} 
+                        className="w-full bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-xl px-4 py-4 text-[#09090B] dark:text-white placeholder-[#71717A] dark:placeholder-neutral-500 focus:outline-none focus:border-accent-purple transition-colors text-sm" 
+                      />
+                      <input 
+                        type="text" 
+                        placeholder="Company / Venture (Optional)" 
+                        value={data.company} 
+                        onChange={e => updateData('company', e.target.value)} 
+                        className="w-full bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-xl px-4 py-4 text-[#09090B] dark:text-white placeholder-[#71717A] dark:placeholder-neutral-500 focus:outline-none focus:border-accent-purple transition-colors text-sm" 
+                      />
+                      <input 
+                        type="text" 
+                        placeholder="Project Name / Initiative *" 
+                        value={data.projectName} 
+                        onChange={e => updateData('projectName', e.target.value)} 
+                        className="w-full bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-xl px-4 py-4 text-[#09090B] dark:text-white placeholder-[#71717A] dark:placeholder-neutral-500 focus:outline-none focus:border-accent-purple transition-colors text-sm" 
+                      />
+                      <input 
+                        type="tel" 
+                        placeholder="Direct Phone / WhatsApp (Optional)" 
+                        value={data.phone} 
+                        onChange={e => updateData('phone', e.target.value)} 
+                        className="w-full bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-xl px-4 py-4 text-[#09090B] dark:text-white placeholder-[#71717A] dark:placeholder-neutral-500 focus:outline-none focus:border-accent-purple transition-colors text-sm md:col-span-2" 
+                      />
+                      <textarea 
+                        placeholder="Brief Architecture Description & Current Bottlenecks (Optional)" 
+                        value={data.description} 
+                        onChange={e => updateData('description', e.target.value)} 
+                        className="w-full bg-white dark:bg-neutral-900 border border-black/10 dark:border-white/10 rounded-xl px-4 py-4 text-[#09090B] dark:text-white placeholder-[#71717A] dark:placeholder-neutral-500 focus:outline-none focus:border-accent-purple transition-colors md:col-span-2 h-32 resize-none text-sm" 
+                      />
                     </div>
-                    {submitError && <div className="text-red-500 mt-4 text-sm">{submitError}</div>}
+                    {submitError && <div className="text-red-500 mt-4 text-sm font-mono">{submitError}</div>}
                   </div>
                 )}
 
                 {step === 6 && (
                   <div className="flex flex-col items-center text-center">
-                    <div className="w-16 h-16 bg-[#FAFAF9] rounded-full flex items-center justify-center mb-8 border border-[rgba(0,0,0,0.1)]">
-                      <div className="w-8 h-8 bg-accent-purple rounded-full animate-pulse" />
+                    <div className="w-16 h-16 bg-accent-purple/15 border border-accent-purple/40 rounded-full flex items-center justify-center mb-6 text-accent-purple shadow-xl shadow-accent-purple/20">
+                      <CheckCircle2 size={32} />
                     </div>
-                    <h3 className="text-3xl md:text-5xl font-medium text-[#09090B] mb-4 font-heading uppercase">Project Brief Ready.</h3>
+                    <h3 className="text-3xl md:text-4xl font-bold text-[#09090B] dark:text-white mb-2 font-heading uppercase">
+                      Architecture Brief Queued.
+                    </h3>
+                    <p className="text-[#52525B] dark:text-neutral-400 text-sm mb-8 max-w-md font-light">
+                      Your technical specification has been securely routed and saved. A principal engineer is reviewing your architecture topology.
+                    </p>
                     
-                    <div className="w-full max-w-2xl bg-[#FAFAF9] border border-[rgba(0,0,0,0.05)] rounded-xl p-6 text-left mb-8 grid grid-cols-2 gap-y-6">
+                    <div className="w-full max-w-2xl bg-neutral-100/80 dark:bg-neutral-900/90 border border-black/10 dark:border-white/10 rounded-xl p-6 text-left mb-8 grid grid-cols-2 gap-y-4 gap-x-6 text-xs shadow-sm">
                       <div>
-                        <span className="font-mono text-[10px] text-[#71717A] block mb-1">PROJECT TYPE</span>
-                        <span className="text-[#09090B] text-sm font-medium">{data.type}</span>
+                        <span className="font-mono text-[#71717A] dark:text-neutral-400 block mb-1">PROJECT TYPE</span>
+                        <span className="text-[#09090B] dark:text-white font-medium">{data.type}</span>
                       </div>
                       <div>
-                        <span className="font-mono text-[10px] text-[#71717A] block mb-1">TIMELINE</span>
-                        <span className="text-[#09090B] text-sm font-medium">{data.timeline}</span>
+                        <span className="font-mono text-[#71717A] dark:text-neutral-400 block mb-1">TIMELINE</span>
+                        <span className="text-[#09090B] dark:text-white font-medium">{data.timeline}</span>
                       </div>
                       <div className="col-span-2">
-                        <span className="font-mono text-[10px] text-[#71717A] block mb-1">SERVICES</span>
-                        <span className="text-[#09090B] text-sm font-medium">{data.needs.join(", ")}</span>
+                        <span className="font-mono text-[#71717A] dark:text-neutral-400 block mb-1">REQUIRED CAPABILITIES</span>
+                        <span className="text-accent-purple font-mono font-semibold">{data.needs.join(", ")}</span>
                       </div>
                       <div>
-                        <span className="font-mono text-[10px] text-[#71717A] block mb-1">BUDGET</span>
-                        <span className="text-[#09090B] text-sm font-medium">{data.budget}</span>
+                        <span className="font-mono text-[#71717A] dark:text-neutral-400 block mb-1">ALLOCATED CAPITAL</span>
+                        <span className="text-[#09090B] dark:text-white font-medium">{data.budget}</span>
                       </div>
                       <div>
-                        <span className="font-mono text-[10px] text-[#71717A] block mb-1">CONTACT</span>
-                        <span className="text-[#09090B] text-sm font-medium">{data.name}</span>
+                        <span className="font-mono text-[#71717A] dark:text-neutral-400 block mb-1">CLIENT CONTACT</span>
+                        <span className="text-[#09090B] dark:text-white font-medium">{data.name}</span>
                       </div>
                     </div>
 
-                    <p className="text-[#52525B] text-sm mb-6 max-w-lg">
-                      We&apos;ll review your requirements and get back to you shortly.
-                    </p>
-
-                    <div className="flex gap-6 font-mono text-[10px] text-[#71717A] uppercase tracking-widest">
-                      <a href="mailto:zerythous345@gmail.com" className="hover:text-accent-purple transition-colors">EMAIL US</a>
-                      <a href="tel:+918660904369" className="hover:text-accent-purple transition-colors">CALL US</a>
+                    <div className="flex gap-6 font-mono text-xs text-[#71717A] dark:text-neutral-400 uppercase tracking-widest font-semibold">
+                      <a href="mailto:zerythous345@gmail.com" className="hover:text-accent-purple transition-colors">zerythous345@gmail.com</a>
+                      <span>•</span>
+                      <a href="tel:+918660904369" className="hover:text-accent-purple transition-colors">+91 8660904369</a>
                     </div>
                   </div>
                 )}
@@ -268,28 +330,12 @@ export default function ProjectBuilder() {
             </AnimatePresence>
           </div>
 
-          {/* Real-time Architecture Blueprint Preview */}
-          {step < 6 && (data.type !== "" || data.needs.length > 0) && (
-            <div className="bg-[#FFFFFF] px-6 md:px-8 py-3.5 border-t border-[rgba(0,0,0,0.04)] flex flex-wrap items-center justify-between gap-3 text-[11px] font-mono">
-              <div className="flex items-center space-x-2 text-[#52525B]">
-                <span className="w-2 h-2 rounded-full bg-accent-purple animate-pulse shrink-0" />
-                <span className="font-semibold text-[#09090B]">ESTIMATED ARCHITECTURE:</span>
-                <span className="text-accent-purple font-medium">{data.type || "Custom Software"}</span>
-                {data.needs.length > 0 && <span className="text-[#52525B] hidden sm:inline">({data.needs.join(" / ")})</span>}
-              </div>
-              <div className="flex items-center space-x-4 text-[#71717A]">
-                {data.timeline && <span>TARGET: {data.timeline}</span>}
-                {data.budget && <span className="text-emerald-600 font-semibold">{data.budget}</span>}
-              </div>
-            </div>
-          )}
-
           {/* Footer Controls */}
           {step < 6 && (
-            <div className="bg-[#FAFAF9] p-6 md:p-8 flex items-center justify-between border-t border-[rgba(0,0,0,0.05)]">
+            <div className="bg-neutral-100/70 dark:bg-neutral-900/60 p-6 md:p-8 flex items-center justify-between border-t border-black/[0.08] dark:border-white/[0.08]">
               {step > 1 ? (
-                <button onClick={prevStep} className="flex items-center text-[#71717A] hover:text-[#09090B] transition-colors text-sm font-medium">
-                  <ArrowLeft size={16} className="mr-2" /> BACK
+                <button onClick={prevStep} className="flex items-center text-[#52525B] dark:text-neutral-400 hover:text-[#09090B] dark:hover:text-white transition-colors text-xs font-mono font-semibold">
+                  <ArrowLeft size={14} className="mr-2" /> PREVIOUS
                 </button>
               ) : <div />}
               
@@ -297,12 +343,16 @@ export default function ProjectBuilder() {
                 onClick={handleNext}
                 disabled={!canProceed() || isSubmitting}
                 className={cn(
-                  "flex items-center px-6 py-3 rounded-lg text-sm font-medium transition-all duration-300",
-                  (canProceed() && !isSubmitting) ? "bg-[#09090B] text-white hover:bg-accent-purple" : "bg-[rgba(0,0,0,0.05)] text-[#A1A1AA] cursor-not-allowed"
+                  "flex items-center px-6 py-3.5 rounded-xl text-xs font-mono font-bold tracking-wider transition-all duration-300",
+                  (canProceed() && !isSubmitting) 
+                    ? "bg-[#09090B] text-white hover:bg-accent-purple dark:bg-white dark:text-[#09090B] dark:hover:bg-accent-purple dark:hover:text-white shadow-md" 
+                    : "bg-neutral-200 dark:bg-neutral-800 text-[#71717A] dark:text-neutral-500 cursor-not-allowed"
                 )}
               >
-                {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : (step === 5 ? "GENERATE BRIEF" : "NEXT STEP")} 
-                {!isSubmitting && <ChevronRight size={16} className="ml-2" />}
+                {isSubmitting ? (
+                  <><Loader2 size={14} className="animate-spin mr-2" /> DISPATCHING...</>
+                ) : (step === 5 ? "DISPATCH SPECIFICATION" : "CONTINUE")} 
+                {!isSubmitting && <ChevronRight size={14} className="ml-1" />}
               </button>
             </div>
           )}

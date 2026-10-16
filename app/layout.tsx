@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Outfit, Syne } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const outfit = Outfit({ 
   subsets: ["latin"],
@@ -33,9 +34,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${outfit.variable} ${syne.variable} font-sans bg-background text-foreground antialiased selection:bg-accent-purple/30 selection:text-white`}>
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('zerythous-theme');
+                  var pref = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  var theme = saved || pref;
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch(e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className={`${outfit.variable} ${syne.variable} font-sans bg-background text-foreground antialiased selection:bg-accent-purple/30 selection:text-white transition-colors duration-300`}>
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
